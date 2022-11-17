@@ -8,7 +8,10 @@ from scipy.integrate import quad_vec
 import csv
 
 rain = pd.read_excel('MATLAB/rain.xlsx')
+t = np.linspace(0.0, 15, num=30)
 x0 = 0
-x1 = 
-rain_integrated, err = quad_vec(rain, xo, x1)
-print(rain_integrated)
+x1 = 15
+rain_integrated, err = quad_vec(rain, x0, x1)
+plt.plot(t, rain_integrated)
+plt.show()
+
