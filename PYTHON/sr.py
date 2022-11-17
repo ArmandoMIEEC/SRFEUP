@@ -37,11 +37,16 @@ ts = 1.0/sr
 t = np.arange(0,1,ts)
 freq = n/T 
 
-plt.stem(freq, np.abs(X), 'b', \
-         markerfmt=" ", basefmt="-b")
+fig = plt.figure()
+ax = fig.add_subplot(111)
+plt.stem(freq, np.abs(X), 'k', \
+         markerfmt=" ", basefmt="-k")
+ax.set_xlabel('xlabel', fontdict=dict(weight='bold'))
+ax.set_ylabel('ylabel', fontdict=dict(weight='bold'))
 plt.xlabel('Frequência (Hz)')
 plt.ylabel('Amplitude da FFT')
-plt.xlim(0, 10)
+plt.xlim(-0.1, 10)
+plt.savefig('fft_sinal.png', dpi=1000)
 plt.show()
 
 fig = plt.figure()
@@ -53,7 +58,7 @@ ax.set_ylabel('ylabel', fontdict=dict(weight='bold'))
 plt.xlabel('Data (dia/mês)')
 plt.ylabel('Potência Recebida (dBm)')
 fig.autofmt_xdate()
-plt.savefig('sinal_comp_ant.png', dpi=1000)
+#plt.savefig('sinal_comp_ant.png', dpi=1000)
 plt.show()
 
 
