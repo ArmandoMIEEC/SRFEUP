@@ -47,17 +47,14 @@ ts = 1.0 / sr
 t = np.arange(0, 1, ts)
 freq = n / T
 
-<<<<<<< Updated upstream
 fig = plt.figure()
 ax = fig.add_subplot(111)
 plt.stem(freq, np.abs(X), 'k', \
          markerfmt=" ", basefmt="-k")
 ax.set_xlabel('xlabel', fontdict=dict(weight='bold'))
 ax.set_ylabel('ylabel', fontdict=dict(weight='bold'))
-=======
 plt.stem(freq, np.abs(X), 'b',
          markerfmt=" ", basefmt="-b")
->>>>>>> Stashed changes
 plt.xlabel('Frequência (Hz)')
 plt.ylabel('Amplitude da FFT')
 plt.xlim(-0.1, 10)
