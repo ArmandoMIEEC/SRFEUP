@@ -13,23 +13,28 @@ import csv
 def s_to_datetime(date_string):
     from datetime import datetime
 
-    datetime_object = datetime.strptime(date_string, '%d-%b-%Y %H:%M')
+    datetime_object = datetime.strptime(date_string, ' %d-%b-%Y %H:%M')
     return datetime_object
 
 
 fhand = open("MATLAB/Forecast.csv", "r")
 forecast_dates = []
-line = fhand.readline()
-while line != "":
+#line = fhand.readline()
+f_line = fhand.readlines()
+#while line != "":
+ #   forecast_dates.append(line[:17])
+  #  line = fhand.readline()
+
+for line in f_line:
     forecast_dates.append(line[:17])
-    line = fhand.readline()
+    #line = fhand.readline()
 
-print(forecast_dates)
+#print(forecast_dates)
 
-for i in range(len(forecast_dates)):
-    forecast_dates[i] = s_to_datetime(forecast_dates[i])
+for i in range(len(forecast_dates)-1):
+    forecast_dates[i] = s_to_datetime(forecast_dates[i+1])
 
-print(forecast_dates)
+print(forecast_dates[1])
 
 t = np.linspace(0.0, 15, num=30)
 x0 = 0
