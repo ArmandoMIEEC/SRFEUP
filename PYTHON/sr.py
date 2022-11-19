@@ -95,11 +95,14 @@ for date in noise_dates:
 noise_total = pd.read_csv('sat_data/sem23_ruido.csv')
 noise_total.columns = ['All']
 noise_total = noise_total['All'].str.split(";", n=2, expand=True)
-noise_total.columns = ['Day', 'Hour', 'Value']
-#noise_total.columns = ['Day', 'Time', 'Value']
-#noise_total["Date"] = noise_total["Day"] + noise_total["Time"]
-#noise_total.groupby(noise_total["datetime"].dt.hour)["value"]
+noise_total.columns = ['Date', 'Hour', 'Value']
+noise_total["Date"] = noise_total["Date"] + " " + noise_total["Hour"]
+noise_total = noise_total.drop('Hour', axis=1)
+noise_total['Date'] = pd.to_datetime(noise_total['Date'])
+noise_total['Value'] = noise_total['Value'].astype(float)
+noise_total.groupby(noise_total["Date"].dt.hour)["Value"].mean()
 print(noise_total)
+
 Y = fft(noise)
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -157,10 +160,8 @@ print(len(rain_amount))
 date_time = pd.to_datetime(forecast_dates)
 # rain_amount = integrate.cumulative_trapezoid(rain_amount)
 # rain_amount = np.append(rain_amount, rain_amount[-1])
-noise2 = pd.DataFrame(noise)
-noise_datetime2 = pd.DataFrame(noise_datetime)
-#noise2.groupby([noise_datetime2[0]].dt.hour)[noise2].mean()
-print(noise)
+#noise_total['Value'] = np.append(noise_total['Value'], noise_total['Value'][-1])
+
 DF = pd.DataFrame()
 DF['value'] = rain_amount
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m'))
@@ -168,7 +169,7 @@ plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
 DF = DF.set_index(date_time)
 plt.plot(DF)
 # plt.plot(signal_datetime23, ifft(X23), color='red', label='ruído')
-plt.plot(noise_datetime, ifft(Y), 'k', label='sinal')
+plt.plot(noise_total['Date'], noise_total['Value'], 'k', label='ruído')
 plt.xlabel('Data (dia/mês)')
 plt.ylabel('Quantidade de chuva (mm)')
 plt.gcf().autofmt_xdate()
