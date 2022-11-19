@@ -78,7 +78,7 @@ freq = n / T
 # fig.autofmt_xdate()
 # plt.savefig('sinal_comp_ant.png', dpi=1000)
 # plt.show()
-
+noise_total = []
 # Noise
 with open('sat_data/sem23_ruido.txt') as f:
     noise_lines = f.readlines()
@@ -87,10 +87,19 @@ for line in noise_lines:
     line_split = line.split()
     noise_dates.append(line_split[0] + " " + line_split[1])
     noise.append(line_split[2])
+    noise_total.append(line_split[0] + " " + line_split[1] + " " + line_split[2])
 
 for date in noise_dates:
     noise_datetime.append(datetime.strptime(date, '%d-%b-%Y %H:%M:%S'))
 
+noise_total = pd.read_csv('sat_data/sem23_ruido.csv')
+noise_total.columns = ['All']
+noise_total = noise_total['All'].str.split(";", n=2, expand=True)
+noise_total.columns = ['Day', 'Hour', 'Value']
+#noise_total.columns = ['Day', 'Time', 'Value']
+#noise_total["Date"] = noise_total["Day"] + noise_total["Time"]
+#noise_total.groupby(noise_total["datetime"].dt.hour)["value"]
+print(noise_total)
 Y = fft(noise)
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -127,6 +136,7 @@ fhand = open("../MATLAB/Forecast.csv", "r")
 forecast_dates = []  # u
 rain_amount = []  # r_a
 aux = []
+temperature = []
 f_line = fhand.readlines()
 
 for line in f_line:
@@ -145,18 +155,24 @@ print(len(rain_amount))
 # print(rain_amount)
 
 date_time = pd.to_datetime(forecast_dates)
-#rain_amount = integrate.cumulative_trapezoid(rain_amount)
-#rain_amount = np.append(rain_amount, rain_amount[-1])
-
+# rain_amount = integrate.cumulative_trapezoid(rain_amount)
+# rain_amount = np.append(rain_amount, rain_amount[-1])
+noise2 = pd.DataFrame(noise)
+noise_datetime2 = pd.DataFrame(noise_datetime)
+#noise2.groupby([noise_datetime2[0]].dt.hour)[noise2].mean()
+print(noise)
 DF = pd.DataFrame()
 DF['value'] = rain_amount
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m'))
 plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
 DF = DF.set_index(date_time)
 plt.plot(DF)
-plt.plot(signal_datetime23, ifft(X23), color='red', label='ruído')
+# plt.plot(signal_datetime23, ifft(X23), color='red', label='ruído')
 plt.plot(noise_datetime, ifft(Y), 'k', label='sinal')
 plt.xlabel('Data (dia/mês)')
 plt.ylabel('Quantidade de chuva (mm)')
 plt.gcf().autofmt_xdate()
 plt.show()
+
+# for i in aux:
+# temperature.append(float(i[]))

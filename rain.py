@@ -29,7 +29,8 @@ f_line = fhand.readlines()
 for line in f_line:
     aux.append(line.strip().split(","))
     forecast_dates.append(line[:17])
-    
+
+
 del forecast_dates[0]
 forecast_dates = list(map(lambda x: s_to_datetime(x), forecast_dates))
 
