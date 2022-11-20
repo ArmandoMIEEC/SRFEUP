@@ -209,5 +209,5 @@ ax.legend()
 plt.savefig('ruido_com_chuva1.png', dpi=1000)
 plt.show()
 
-# for i in aux:
-# temperature.append(float(i[]))
+
+
