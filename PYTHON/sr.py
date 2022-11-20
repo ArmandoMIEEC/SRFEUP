@@ -106,11 +106,21 @@ noise_total['Value'] = noise_total['Value'].astype(float)
 noise_total.groupby(noise_total["Date"].dt.hour)["Value"].mean()
 print(noise_total)
 
-Y = fft(noise)
+print(noise_total['Value'][0])
+for i in range(0, len(noise_total['Value'])):
+    if abs(noise_total['Value'][i]) < 51:
+        noise_total['Value'][i] = noise_total['Value'][i - 1]
+
+for i in range(0, len(signal23)):
+    if abs(float(signal23[i])) > 45:
+        signal23[i] = signal23[i-1]
+
+X23 = fft(signal23)
+Y = fft(noise_total['Value'])
 fig = plt.figure()
 ax = fig.add_subplot(111)
-plt.plot(noise_datetime, ifft(Y), 'k', label='sinal')
-plt.plot(signal_datetime23, ifft(X23), color='red', label='ruído')
+plt.plot(noise_total['Date'], ifft(Y), 'k', label='ruído')
+plt.plot(signal_datetime23, ifft(X23), color='red', label='sinal')
 plt.plot()
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m'))
 ax.set_xlabel('xlabel', fontdict=dict(weight='bold'))
@@ -169,7 +179,7 @@ date_time = pd.to_datetime(forecast_dates)
 
 def mean_filter(arr, k):
     p = len(arr)
-    diag_offset = np.linspace(-(k//2), k//2, k, dtype=int)
+    diag_offset = np.linspace(-(k // 2), k // 2, k, dtype=int)
     eL = scipy.sparse.diags(np.ones((k, p)), offsets=diag_offset, shape=(p, p))
     nrmlize = eL @ np.ones_like(arr)
     return (eL @ arr) / nrmlize
@@ -194,9 +204,9 @@ ax2.set_ylim([-58, -52])
 ax2.plot(noise_total['Date'], noise_total_filtered, 'k', label='Ruído')
 ax2.set_ylabel('Potência de Ruído (dBm)')
 plt.gcf().autofmt_xdate()
-#ax.legend()
-ax2.legend()
-plt.savefig('ruido_com_chuva2.png', dpi=1000)
+ax.legend()
+#ax2.legend()
+plt.savefig('ruido_com_chuva1.png', dpi=1000)
 plt.show()
 
 # for i in aux:
