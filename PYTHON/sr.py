@@ -167,7 +167,10 @@ DF['value'] = rain_amount
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m'))
 plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
 DF = DF.set_index(date_time)
+x0 = noise_total['Date'][0]
+x1 = noise_total['Date'][len(noise_total['Date'])-1]
 fig, ax = plt.subplots()
+ax.set_xlim([x0, x1])
 ax.plot(DF, label="Chuva")
 ax.set_xlabel('Data (dia/mês)')
 ax.set_ylabel('Quantidade de chuva (mm/h)')
