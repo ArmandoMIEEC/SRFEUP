@@ -1,12 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy
 from numpy.fft import fft, ifft
 from datetime import datetime
 import matplotlib.dates as mdates
 import pandas as pd
 import matplotlib.dates as mdates
+import scipy.sparse
 from scipy import integrate
 from scipy.integrate import quad
+from scipy.signal import butter, lfilter, freqz
 
 # Signal
 with open('sat_data/sem12_sinal.txt') as f:
@@ -158,9 +161,21 @@ print(len(rain_amount))
 # print(rain_amount)
 
 date_time = pd.to_datetime(forecast_dates)
+
+
 # rain_amount = integrate.cumulative_trapezoid(rain_amount)
 # rain_amount = np.append(rain_amount, rain_amount[-1])
-#noise_total['Value'] = np.append(noise_total['Value'], noise_total['Value'][-1])
+# noise_total['Value'] = np.append(noise_total['Value'], noise_total['Value'][-1])
+
+def mean_filter(arr, k):
+    p = len(arr)
+    diag_offset = np.linspace(-(k//2), k//2, k, dtype=int)
+    eL = scipy.sparse.diags(np.ones((k, p)), offsets=diag_offset, shape=(p, p))
+    nrmlize = eL @ np.ones_like(arr)
+    return (eL @ arr) / nrmlize
+
+
+noise_total_filtered = mean_filter(noise_total['Value'], 50)
 
 DF = pd.DataFrame()
 DF['value'] = rain_amount
@@ -168,7 +183,7 @@ plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m'))
 plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
 DF = DF.set_index(date_time)
 x0 = noise_total['Date'][0]
-x1 = noise_total['Date'][len(noise_total['Date'])-1]
+x1 = noise_total['Date'][len(noise_total['Date']) - 1]
 fig, ax = plt.subplots()
 ax.set_xlim([x0, x1])
 ax.plot(DF, label="Chuva")
@@ -176,14 +191,13 @@ ax.set_xlabel('Data (dia/mês)')
 ax.set_ylabel('Quantidade de chuva (mm/h)')
 ax2 = ax.twinx()
 ax2.set_ylim([-58, -52])
-ax2.plot(noise_total['Date'], noise_total['Value'], 'k', label='Ruído')
+ax2.plot(noise_total['Date'], noise_total_filtered, 'k', label='Ruído')
 ax2.set_ylabel('Potência de Ruído (dBm)')
 plt.gcf().autofmt_xdate()
-ax.legend()
+#ax.legend()
 ax2.legend()
-plt.savefig('ruido_com_chuva.png', dpi=1000)
+plt.savefig('ruido_com_chuva2.png', dpi=1000)
 plt.show()
-
 
 # for i in aux:
 # temperature.append(float(i[]))
