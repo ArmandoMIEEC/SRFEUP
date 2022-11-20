@@ -180,7 +180,9 @@ ax2.set_ylabel('Potência de Ruído (dBm)')
 plt.gcf().autofmt_xdate()
 ax.legend()
 ax2.legend()
+plt.savefig('ruido_com_chuva.png', dpi=1000)
 plt.show()
+
 
 # for i in aux:
 # temperature.append(float(i[]))
