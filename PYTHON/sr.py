@@ -106,7 +106,22 @@ noise_total['Value'] = noise_total['Value'].astype(float)
 noise_total.groupby(noise_total["Date"].dt.hour)["Value"].mean()
 print(noise_total)
 
-print(noise_total['Value'][0])
+X23 = fft(signal23)
+Y = fft(noise_total['Value'])
+fig = plt.figure()
+ax = fig.add_subplot(111)
+plt.plot(noise_total['Date'], ifft(Y), 'k', label='ruído')
+plt.plot()
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m'))
+ax.set_xlabel('xlabel', fontdict=dict(weight='bold'))
+ax.set_ylabel('ylabel', fontdict=dict(weight='bold'))
+plt.xlabel('Data (dia/mês)')
+plt.ylabel('Potência (dBm)')
+plt.legend()
+fig.autofmt_xdate()
+plt.savefig('ruido_sem_filtro.png', dpi=1000)
+plt.show()
+
 for i in range(0, len(noise_total['Value'])):
     if abs(noise_total['Value'][i]) < 51:
         noise_total['Value'][i] = noise_total['Value'][i - 1]
