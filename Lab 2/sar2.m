@@ -39,8 +39,21 @@ res = circshift(ifft(fft(conj(CH)).*conj(fft(s))), -32000);
 figure(8);
 image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128, 0.02),1,abs(res))/10000); axis equal
 
-ch_x = [zeros(100,1400); ch; zeros(200,14001)];
+ch_x = [zeros(100,14001); ch; zeros(200,14001)];
 ch_xf = fftshift(fft(ch_x,[],2),2);
 
 figure(10)
 image(abs(ch_xf')/10000);
+%%
+dn = round(1500*(1./sqrt(1-(300/fc/2*fx).^2)-1));
+nn = 1500 - dn;
+ch_vf = zeros(size(ch_xf));
+for k=1:14001; dummy = fftshift(fft(ch_xf(:,k))); dummy = dummy(1:nn(k))+floor(dn(k)/2); ch_vf(1:nn(k),k)=ifft(fftshift(dummy)); end
+figure(11)
+image(abs(ch_vf')/10000);
+ch_v = ifft(fftshift(ch_vf((1:1200)+100, :),2),[],2);
+CH = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1, 1200)];
+res_c = res;
+res = circshift(ifft(fft(conj(CH)).*conj(fft(s))), -32000);
+figure(12)
+image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.02),1,abs(res))/10000); axis equal;
