@@ -46,8 +46,6 @@ image(x,r,abs(ch_az)/20000);
 
 %%
 
-%image(abs(ch_c)'/100);
-
 CH = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1, 1200)];
 
 res = circshift(ifft(fft(conj(CH)).*conj(fft(s))), -32000);
