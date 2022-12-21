@@ -20,8 +20,7 @@
  dr=3.e08/(2.*rng_samp_rate);
  range=near_range+2700*dr;
 %
-% use the doppler centroid estimated from the data
-and the
+% use the doppler centroid estimated from the dataand the
 % doppler rate from the spacecraft velocity and
 range
 %
@@ -53,8 +52,7 @@ range
 %
 % generate the range reference function
 %
-[cref,fcref]=rng_ref(ncol,rng_samp_rate,pulse_dur,chir
-p_slope);
+[cref,fcref]=rng_ref(ncol,rng_samp_rate,pulse_dur,chirp_slope);
 %
 % take the fft of the SAR data
 %
