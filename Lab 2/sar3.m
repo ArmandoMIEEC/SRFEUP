@@ -1,13 +1,14 @@
 delta_x = 0.05;
-fc = 2340;
+fc = 2.340e9;
 fs = 60e6;
-%%
+wlen = 3e8/fc;
+delta_R = (1/fs) * (3e8/2);
 r = ((1:1200)+100)*2.5;
 x = (-32000:32000-1)'*0.5;
 d = sqrt(x.*x*ones(1,1200)+ones(64000,1)*r.*r);
 A = (abs(atan2(x*ones(1,1200), ones(64000,1)*r))*180/pi <= 20) .* (abs(atan2(x*ones(1,1200), ones(64000,1)*r))*180/pi <= 20);
 s=A.*exp(-2j*pi*2*d/(300/fc));
-res = zeros(64000-1,1200);
+%res = zeros(64000-1,1200);
 
 
 
@@ -36,7 +37,25 @@ figure(7);
 image(abs(ch_c)/100);
 
 CH = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1, 1200)];
+%% Azimuth Compression
+r = ((1:1200)+100)*2.5;
+x = (-32000:32000-1)'*0.5;
+%xMat = repmat(x,1200,1);
 
+rMat = repmat(r.',1,14001);
+
+sPhase = -4*pi/wlen*sqrt(x.^2 + r.^2);
+sMat = exp(1j*sPhase);
+A = (abs(atan2(x*ones(1,1200), ones(64000,1)*r))*180/pi <= 20) .* (abs(atan2(x*ones(1,1200), ones(64000,1)*r))*180/pi <= 20);
+sMat = sMat.*A;
+reqSampleNum = size(sMat,2) + 14001 - 1;
+sMatPadded = [sMat zeros(size(sMat,1), reqSampleNum-size(sMat,2))];
+rangeCompDataPadded = [ch_c zeros(1400), reqSampleNum-size(ch_c, 2)];
+
+azimthCompData = ifftshift(ifft(fft(rangeCompDataPadded, [], 2) .* conj(fft(sMatPadded, [], 2)), []), 2);
+
+figure(13)
+image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.05),1,abs(azimthCompData))/10000); axis equal;
 %%
 res = circshift(ifft(fft(conj(CH)).*conj(fft(s))), -32000);
 figure(8);
