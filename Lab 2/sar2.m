@@ -27,27 +27,14 @@ figure(5);
 image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(fftshift(fft(ch_c'),1))/10000);
 
 %% Azimuth Compression
-F_ext = 64000;
-angles = atan2(x*ones(1,1200), ones(64000,1)*r)*180/pi;
-conv_func = (abs(angles) <= 15).*sinc(angles/15).*(abs(angles)> 0.8);
-S = conv_func.*exp(-4j*pi*d/(3e8/2340e6));
-ch_ext = [zeros((F_ext-14000)/2, 1200); ch_c'; zeros((F_ext-14000)/2 -1, 1200)];
-%ch_ext = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1, 1200)];
-
+CH = [zeros((64000-14000)/2, 1200); ch_c'; zeros((64000-14000)/2 -1, 1200)];
 figure(14)
-image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(S)*20);
-%image(x,r,abs(S)*20);
+image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(s)*20);
 figure(15)
-image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(ch_ext)/200);
-%image(x,r,abs(ch_ext)/200);
-
-ch_az = ifft(fft(ch_ext).*conj(fft(fftshift(S,1))));
-%ch_az = circshift(ifft(fft(conj(ch_ext)).*conj(fft(S))), -32000);
+image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(CH)/200);
+ch_az = ifft(fft(CH).*conj(fft(fftshift(s,1))));
 figure(16)
 image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(ch_az)/20000);
-
-%image(x,r,abs(ch_az)/20000);
-
 %%
 
 CH = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1, 1200)];

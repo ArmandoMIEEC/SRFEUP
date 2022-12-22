@@ -46,6 +46,7 @@ image(x,r,abs(ch_az)/20000);
 
 %% Low-pass filter
 figure(9)
+%image(x,r,filter(fir1(128,0.05),1,abs(ch_az))/10000); axis equal;
 image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.05),1,abs(ch_az))/10000);
 
 %% Filtro de decimação
