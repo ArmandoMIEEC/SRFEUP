@@ -1,0 +1,10 @@
+delta_x = 0.05;
+fc = 2.340e9;
+fs = 60e6;
+wlen = 3e8/fc;
+delta_R = (1/fs) * (3e8/2);
+r = ((1:1200)+100)*2.5;
+x = (-32000:32000-1)'*0.05;
+d = sqrt(x.*x*ones(1,1200)+ones(64000,1)*r.*r);
+A = (abs(atan2(x*ones(1,1200), ones(64000,1)*r))*180/pi <= 20) .* (abs(atan2(x*ones(1,1200), ones(64000,1)*r))*180/pi > 0.8);
+s=A.*exp(-4j*pi*d/(3e8/fc));

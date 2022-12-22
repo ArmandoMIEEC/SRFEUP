@@ -35,14 +35,18 @@ ch_ext = [zeros((F_ext-14000)/2, 1200); ch_c'; zeros((F_ext-14000)/2 -1, 1200)];
 %ch_ext = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1, 1200)];
 
 figure(14)
-image(x,r,abs(S)*20);
+image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(S)*20);
+%image(x,r,abs(S)*20);
 figure(15)
-image(x,r,abs(ch_ext)/200);
+image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(ch_ext)/200);
+%image(x,r,abs(ch_ext)/200);
 
 ch_az = ifft(fft(ch_ext).*conj(fft(fftshift(S,1))));
 %ch_az = circshift(ifft(fft(conj(ch_ext)).*conj(fft(S))), -32000);
 figure(16)
-image(x,r,abs(ch_az)/20000);
+image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(ch_az)/20000);
+
+%image(x,r,abs(ch_az)/20000);
 
 %%
 
@@ -72,4 +76,4 @@ CH = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1,
 res_c = res;
 res = circshift(ifft(fft(conj(CH)).*conj(fft(s))), -32000);
 figure(12)
-image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.05),1,abs(res))/10000); axis equal;
+image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.05),1,abs(res))/10000);

@@ -32,7 +32,9 @@ CH = [zeros((F_ext-14000)/2, 1200); ch_c'; zeros((F_ext-14000)/2 -1, 1200)];
 %CH = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1, 1200)];
 
 figure(4)
-image(x,r,abs(S)*20);
+%image(x,r,abs(S)*20);
+image(((1:1200)+100)*2.5, ((0:14000)'-7000)/14001/0.05, abs(S)*20);
+%%
 figure(5)
 image(x,r,abs(CH)/200);
 
@@ -43,7 +45,8 @@ image(x,r,abs(ch_az)/20000);
 
 %% Low-pass filter
 figure(9)
-image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.05),1,abs(ch_az))/10000); axis equal;
+%image(x,r,filter(fir1(128,0.05),1,abs(ch_az))/10000); axis equal;
+image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.05),1,abs(ch_az))/10000);
 
 %% Filtro de decimação
 
@@ -63,6 +66,9 @@ image(abs(ch_vf')/10000);
 
 ch_v = ifft(fftshift(ch_vf((1:1200)+100, :),2),[],2);
 CH = [zeros((64000-14000)/2, 1200); ch_c(:,end:-1:1).'; zeros((64000-14000)/2-1, 1200)];
+%%
 res = circshift(ifft(fft(conj(CH)).*conj(fft(s))), -32000);
+
 figure(10)
-image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.05),1,abs(res))/10000); axis equal;
+%image(x,r,filter(fir1(128,0.05),1,abs(res))/10000); 
+image(((1:1200)+100)*2.5, (-32000+1:32000-1)'*0.05, filter(fir1(128,0.05),1,abs(res))/10000);
